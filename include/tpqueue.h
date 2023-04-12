@@ -3,73 +3,102 @@
 #define INCLUDE_TPQUEUE_H_
 #include <string>
 
+#pragma once
+#include <iostream>
+
 struct SYM {
   char ch;
   int prior;
+  SYM* next;
 };
 
 template <typename T, int size>
 class TPQueue {
  private:
-  struct NODE {
-    SYM data;
-    NODE* next;
+  struct T {
+    char ch;
+    int prior;
+    T* next;
   };
-  NODE* head;
-  int members;
-  NODE* create(SYM);
+  T *head;
+  static int members;
+  int size;
+  TPQueue::T* create(const char&, const int&);
 
  public:
   TPQueue();
+  int countMembers() {
+    members++;
+    return members;
+  };
+  int countMembers1() {
+    members--;
+    return members;
+  }
   int push(SYM);
+  int getCurSize();
   bool isFull();
   bool isEmpty();
   SYM pop();
+  void display();
+  
 };
+template<typename T, int size>
+int TPQueue<T, size>::members = 0;
 
 template <typename T, int size>
-TPQueue<T, size>::TPQueue():head(nullptr), members(0){}
+TPQueue<T, size>::TPQueue() {
+  head = nullptr;
+}
+template <typename T, int size>
+int TPQueue<T, size>::getCurSize() {
+  return members;
+}
 
 template <typename T, int size>
-typename TPQueue<T, size>::NODE* TPQueue<T, size>::create(SYM value) {
-  NODE* temp = new NODE;
-  temp->data.ch = value.ch;
-  temp->data.prior = value.prior;
+typename TPQueue<T, size>::T* TPQueue<T, size>::create(const char& ch,
+                                                       const int& prior) {
+  T* temp = new T;
+  temp->ch = ch;
+  temp->prior = prior;
   temp->next = nullptr;
   return temp;
 }
 
 template <typename T, int size>
 bool TPQueue<T, size>::isEmpty() {
-  return head == nullptr;
+  if (head == nullptr) return true;
+  return false;
 }
-
 template <typename T, int size>
 bool TPQueue<T, size>::isFull() {
-  return members == size;
+  if (getCurSize() == size)
+    return true;
+  else
+    return false;
 }
 
 template <typename T, int size>
 int TPQueue<T, size>::push(SYM item) {
-    if (isFull()) throw std::string("Full");
-    if (isEmpty()) {
-    head = create(item);
-    members++;
-    }
-    NODE* temp = create(item);
+  if (isEmpty()) {
+    head = create(item.ch, item.prior);
+    countMembers();
+  }
+  else if (!isFull()) {
+    T* temp = create(item.ch, item.prior);
     int counter = members;
-    NODE* current = head;
-    if (current->data.prior < temp->data.prior) {
+    T* current = head;
+    if (current->prior < temp->prior) {
       temp->next = current;
       head = temp;
-      members++;
+      countMembers();
       return 1;
     }
     while (counter - 1) {
-      if (current->data.prior >= temp->data.prior && current->next->data.prior < temp->data.prior) {
+      if (current->prior >= temp->prior && current->next->prior < temp->prior) {
         temp->next = current->next;
         current->next = temp;
-        members++;
+        countMembers();
         return 1;
       }
       current = current->next;
@@ -77,16 +106,20 @@ int TPQueue<T, size>::push(SYM item) {
     }
     current->next = temp;
     temp->next = head;
-    members++;
+    countMembers();
     return 1;
+    }
   }
-
 template <typename T, int size>
 SYM TPQueue<T, size>::pop() {
-    if (isEmpty()) throw std::string("Empty");
-    SYM temp = head->data;
+  if (!isEmpty()) {
+    T temp;
+    temp.ch = head->ch;
+    temp.prior = head->prior;
+    temp.next = nullptr;
     head = head->next;
-    return temp;
+    return *temp;
+  }
 }
 
 #endif  // INCLUDE_TPQUEUE_H_
