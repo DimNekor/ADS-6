@@ -10,13 +10,13 @@ struct SYM {
 template <typename T, int size>
 class TPQueue {
  private:
-  struct T {
+  struct NODE {
     SYM data;
-    T* next;
+    NODE* next;
   };
-  T *head;
+  NODE* head;
   int members;
-  TPQueue::T* create(SYM);
+  NODE* create(SYM);
 
  public:
   TPQueue();
@@ -30,8 +30,8 @@ template <typename T, int size>
 TPQueue<T, size>::TPQueue():head(nullptr), members(0){}
 
 template <typename T, int size>
-typename TPQueue<T, size>::T* TPQueue<T, size>::create(SYM value) {
-  T* temp = new T;
+typename TPQueue<T, size>::NODE* TPQueue<T, size>::create(SYM value) {
+  NODE* temp = new NODE;
   temp->data.ch = value.ch;
   temp->data.prior = value.prior;
   temp->next = nullptr;
@@ -55,9 +55,9 @@ int TPQueue<T, size>::push(SYM item) {
     head = create(item);
     members++;
     }
-    T* temp = create(item);
+    NODE* temp = create(item);
     int counter = members;
-    T* current = head;
+    NODE* current = head;
     if (current->data.prior < temp->data.prior) {
       temp->next = current;
       head = temp;
