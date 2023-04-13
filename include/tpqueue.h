@@ -46,12 +46,11 @@ bool TPQueue<T, size>::isFull() {
 
 template<typename T, int size>
 int TPQueue<T, size>::push(T data) {
-  if (isFull())
+  if (isFull()) {
     throw std::string("Full!");
-  else if (isEmpty()) {
+  } else if (isEmpty()) {
     count++;
     mas[head % size] = data;
-    return 1;
   } else {
     int current = head;
     int counter = count;
