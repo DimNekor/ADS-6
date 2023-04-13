@@ -51,6 +51,7 @@ int TPQueue<T, size>::push(T data) {
   } else if (isEmpty()) {
     count++;
     mas[head % size] = data;
+    return 1;
   } else {
     int current = head;
     int counter = count;
